@@ -172,8 +172,9 @@ def main(
     check_required_env_vars()
 
     # Set the Gemini API key
-    genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-    logger.debug(f"api_key: {os.getenv("GEMINI_API_KEY")}")
+    api_key = os.getenv("GEMINI_API_KEY")
+    genai.configure(api_key=api_key)
+    logger.debug(f"api_key: {api_key}")
 
     # Request a code review
     chunked_reviews, summarized_review = get_review(
