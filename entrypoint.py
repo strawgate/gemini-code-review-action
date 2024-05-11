@@ -182,7 +182,7 @@ def main(
     check_required_env_vars()
 
     # Set the OpenAI API key
-    openai.base_url = "https://my-openai-gemini-demo.vercel.app"
+    openai.api_base = "https://my-openai-gemini-demo.vercel.app"
     openai.api_key = os.getenv("GEMINI_API_KEY")
 
     # Request a code review
