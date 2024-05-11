@@ -111,7 +111,7 @@ def get_review(
         ```{str(chunked_diff)}```""")
 
         logger.debug(f"Prompt: {prompt}")
-        response = model.generate_content(prompt)
+        response = genaiModel.generate_content(prompt)
         review_result = response.text
         chunked_reviews.append(review_result)
     # If the chunked reviews are only one, return it
@@ -127,7 +127,7 @@ def get_review(
     ```{str(chunked_reviews_JOIN)}```""")
 
     logger.debug(f"Prompt: {prompt}")
-    response = model.generate_content(prompt)
+    response = genaiModel.generate_content(prompt)
     summarized_review = response.text
     return chunked_reviews, summarized_review
 
