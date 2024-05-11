@@ -18,11 +18,6 @@ We have to set a GitHub Actions secret `GEMINI_API_KEY` to use the OpenAI API so
 - `pull_request_diff_chunk_size`: The chunk size of the diff of the pull request to generate a review comment.
 - `extra_prompt`: The extra prompt to generate a review comment.
 - `model`: The model to generate a review comment. We can use a model which is available in `openai.ChatCompletion.create`.
-- `temperature`: The temperature to generate a review comment.
-- `top_p`: The top_p to generate a review comment.
-- `max_tokens`: The max_tokens to generate a review comment.
-- `frequency_penalty`: The frequency_penalty to generate a review comment.
-- `presence_penalty`: The presence_penalty to generate a review comment.
 - `log_level`: The log level to print logs.
 
 As you might know, a model of OpenAI has limitation of the maximum number of input tokens.
@@ -77,12 +72,7 @@ jobs:
           github_repository: ${{ github.repository }}
           github_pull_request_number: ${{ github.event.pull_request.number }}
           git_commit_hash: ${{ github.event.pull_request.head.sha }}
-          model: "gemini-1.5-pro-latest"
-          temperature: "0.1"
-          max_tokens: "512"
-          top_p: "1"
-          frequency_penalty: "0.0"
-          presence_penalty: "0.0"
+          model: "gemini-1.0-pro-latest"
           pull_request_diff: |-
             ${{ steps.get_diff.outputs.pull_request_diff }}
           pull_request_chunk_size: "3500"
