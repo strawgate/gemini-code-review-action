@@ -26,8 +26,8 @@ We can tune the chunk size based on the model we use.
 
 ## Example usage
 Here is an example to use the Action to review a pull request of the repository.
-The actual file is located at [`.github/workflows/test-action.yml`](.github/workflows/test-action.yml).
-We set `extra_prompt` to `You are very familiar with python too.`, as the Action is implemented in Python.
+The actual file is located at [`.github/workflows/ai-code-review.yml`](.github/workflows/ai-code-review.yml).
+We set `extra_prompt` to `You are very familiar with python too. Answer in Brazilian Portuguese!`, as the Action is implemented in Python.
 We aim to make GPT review a pull request from a point of view of a Python developer.
 
 As a result of an execution of the Action, the Action posts a review comment to the pull request like the following image.
