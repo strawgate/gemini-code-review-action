@@ -183,6 +183,7 @@ def main(
 
     # Set the OpenAI API key
     openai.api_base = "https://my-openai-gemini-demo.vercel.app/v1"
+    openai.api_version = "2022-12-01"
     openai.api_type = "azure"
     openai.api_key = os.getenv("GEMINI_API_KEY")
 
