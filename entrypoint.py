@@ -105,6 +105,7 @@ def get_review(
     chunked_reviews = []
     for chunked_diff in chunked_diff_list:
         response = openai.ChatCompletion.create(
+            engine="deployment-name",
             model=model,
             messages=[
                 {"role": "system", "content": review_prompt},
@@ -125,6 +126,7 @@ def get_review(
     # Summarize the chunked reviews
     summarize_prompt = get_summarize_prompt()
     response = openai.ChatCompletion.create(
+        engine="deployment-name",
         model=model,
         messages=[
             {"role": "system", "content": summarize_prompt},
