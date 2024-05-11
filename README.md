@@ -61,7 +61,7 @@ jobs:
           git diff "origin/${{ env.PULL_REQUEST_HEAD_REF }}" > "diff.txt"
           # shellcheck disable=SC2086
           echo "diff=$(cat "diff.txt")" >> $GITHUB_ENV
-      - uses: rubensflinco/gemini-code-review-action@1.0.1
+      - uses: rubensflinco/gemini-code-review-action@1.0.3
         name: "Code Review by Gemini AI"
         id: review
         with:
