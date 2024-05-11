@@ -5,11 +5,11 @@ If the size of a pull request is over the maximum chunk size of the OpenAI API, 
 And then the Action summarizes the review comments and posts a review comment to the pull request.
 
 ## Pre-requisites
-We have to set a GitHub Actions secret `OPENAI_API_KEY` to use the OpenAI API so that we securely pass it to the Action.
+We have to set a GitHub Actions secret `GEMINI_API_KEY` to use the OpenAI API so that we securely pass it to the Action.
 
 ## Inputs
 
-- `openai_api_key`: The OpenAI API key to access the OpenAI API.
+- `gemini_api_key`: The OpenAI API key to access the OpenAI API.
 - `github_token`: The GitHub token to access the GitHub API.
 - `github_repository`: The GitHub repository to post a review comment.
 - `github_pull_request_number`: The GitHub pull request number to post a review comment.
@@ -72,7 +72,7 @@ jobs:
         name: "Code Review by GPT"
         id: review
         with:
-          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           github_repository: ${{ github.repository }}
           github_pull_request_number: ${{ github.event.pull_request.number }}
