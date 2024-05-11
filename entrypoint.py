@@ -106,9 +106,9 @@ def get_review(
     chunked_reviews = []
     for chunked_diff in chunked_diff_list:
         prompt = f"""
-        {review_prompt}
+        {str(review_prompt)}
         
-        ```{chunked_diff}```"""
+        ```{str(chunked_diff)}```"""
 
         logger.debug(f"Prompt: {prompt}")
         response = model.generate_content(prompt)
@@ -120,11 +120,12 @@ def get_review(
 
     # Summarize the chunked reviews
     summarize_prompt = get_summarize_prompt()
+    chunked_reviews_JOIN = str("\n".join(chunked_reviews))
     prompt = f"""
     {summarize_prompt}
     
-    ```{" ".join(chunked_reviews)}```"""
-    
+    ```{str(chunked_reviews_JOIN)}```"""
+
     logger.debug(f"Prompt: {prompt}")
     response = model.generate_content(prompt)
     summarized_review = response.text
