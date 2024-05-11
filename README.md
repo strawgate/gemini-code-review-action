@@ -1,15 +1,15 @@
 # gemini-code-review-action
-A container GitHub Action to review a pull request by GPT.
+A container GitHub Action to review a pull request by Gemini AI.
 
-If the size of a pull request is over the maximum chunk size of the OpenAI API, the Action will split the pull request into multiple chunks and generate review comments for each chunk.
+If the size of a pull request is over the maximum chunk size of the Gemini API, the Action will split the pull request into multiple chunks and generate review comments for each chunk.
 And then the Action summarizes the review comments and posts a review comment to the pull request.
 
 ## Pre-requisites
-We have to set a GitHub Actions secret `GEMINI_API_KEY` to use the OpenAI API so that we securely pass it to the Action.
+We have to set a GitHub Actions secret `GEMINI_API_KEY` to use the Gemini API so that we securely pass it to the Action.
 
 ## Inputs
 
-- `gemini_api_key`: The OpenAI API key to access the OpenAI API [(GET MY API KEY)](https://makersuite.google.com/app/apikey).
+- `gemini_api_key`: The Gemini API key to access the Gemini API [(GET MY API KEY)](https://makersuite.google.com/app/apikey).
 - `github_token`: The GitHub token to access the GitHub API (You do not need to generate this Token!).
 - `github_repository`: The GitHub repository to post a review comment.
 - `github_pull_request_number`: The GitHub pull request number to post a review comment.
@@ -17,14 +17,12 @@ We have to set a GitHub Actions secret `GEMINI_API_KEY` to use the OpenAI API so
 - `pull_request_diff`: The diff of the pull request to generate a review comment.
 - `pull_request_diff_chunk_size`: The chunk size of the diff of the pull request to generate a review comment.
 - `extra_prompt`: The extra prompt to generate a review comment.
-- `model`: The model to generate a review comment. We can use a model which is available in `openai.ChatCompletion.create`.
+- `model`: The model to generate a review comment. We can use a model which is available.
 - `log_level`: The log level to print logs.
 
-As you might know, a model of OpenAI has limitation of the maximum number of input tokens.
+As you might know, a model of Gemini has limitation of the maximum number of input tokens.
 So we have to split the diff of a pull request into multiple chunks, if the size of the diff is over the limitation.
 We can tune the chunk size based on the model we use.
-For instance, `gpt-4` can handle larger input tokens than `gpt-3.5-turbo`.
-So, we can increase the chunk size for `gpt-4` than `gpt-3.5-turbo`.
 
 ## Example usage
 Here is an example to use the Action to review a pull request of the repository.
@@ -36,7 +34,7 @@ As a result of an execution of the Action, the Action posts a review comment to 
 ![An example comment of the code review](./docs/images/example.png)
 
 ```yaml
-name: "Test Code Review"
+name: "AI Code Review"
 
 on:
   pull_request:
@@ -63,7 +61,7 @@ jobs:
           git diff "origin/${{ env.PULL_REQUEST_HEAD_REF }}" > "diff.txt"
           # shellcheck disable=SC2086
           echo "diff=$(cat "diff.txt")" >> $GITHUB_ENV
-      - uses: rubensflinco/gemini-code-review-action@latest
+      - uses: rubensflinco/gemini-code-review-action@1.0.1
         name: "Code Review by Gemini AI"
         id: review
         with:
@@ -77,10 +75,6 @@ jobs:
             ${{ steps.get_diff.outputs.pull_request_diff }}
           pull_request_chunk_size: "3500"
           extra_prompt: |-
-            You are very familiar with python too.
+            You are very familiar with python too. Answer in Brazilian Portuguese!
           log_level: "DEBUG"
 ```
-
-## Known Issues
-1. We may pay for the OpenAI API usage a lot, if we use the Action for a large number of pull requests.
-2. The Action may fail due to the rate limit of the OpenAI API.
