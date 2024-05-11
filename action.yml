@@ -10,14 +10,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-name: "Code Review by GPT"
-description: "Automatically create a comment about differences in a pull request by GPT"
+name: "Code Review by Gemini AI"
+description: "Automatically create a comment about differences in a pull request by Gemini AI"
 
-author: "yu-iskw"
+author: "rubensflinco"
 
 inputs:
-  openai_api_key:
-    description: "The Open API token to use for the action"
+  gemini_api_key:
+    description: "The Gemini AI API token to use for the action"
     required: true
   github_token:
     description: "The GitHub token to use for the action"
@@ -37,7 +37,7 @@ inputs:
   model:
     description: "GPT model"
     required: true
-    default: "text-davinci-003"
+    default: "gemini-1.5-pro-latest"
   extra_prompt:
     description: "Extra prompt for GPT"
     required: false
@@ -90,7 +90,7 @@ runs:
   using: docker
   image: Dockerfile
   env:
-    OPENAI_API_KEY: ${{ inputs.openai_api_key }}
+    GEMINI_API_KEY: ${{ inputs.gemini_api_key }}
     GITHUB_TOKEN: ${{ inputs.github_token }}
     GITHUB_REPOSITORY: ${{ inputs.github_repository }}
     GITHUB_PULL_REQUEST_NUMBER: ${{ inputs.github_pull_request_number }}
