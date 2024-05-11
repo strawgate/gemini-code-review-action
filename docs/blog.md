@@ -73,7 +73,7 @@ jobs:
         name: "Code Review by GPT"
         id: review
         with:
-          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           github_repository: ${{ github.repository }}
           github_pull_request_number: ${{ github.event.pull_request.number }}
@@ -97,7 +97,7 @@ To enable GPT-powered pull request reviews in your GitHub Actions workflow, you 
 
 Here are the inputs required for the GitHub Actions workflow:
 
-- `openai_api_key`: The OpenAI API key to access the OpenAI API. You can obtain an API key by signing up for an OpenAI account and creating an API key in the dashboard.
+- `gemini_api_key`: The OpenAI API key to access the OpenAI API. You can obtain an API key by signing up for an OpenAI account and creating an API key in the dashboard.
 - `github_token`: The GitHub token to access the GitHub API. You can generate a GitHub token in your GitHub account settings, and you will need to provide the repo and pull_request scopes.
 - `github_repository`: The GitHub repository to post a review comment. This input should be set to the repository where the pull request was opened or updated.
 - `github_pull_request_number`: The GitHub pull request number to post a review comment. This input should be set to the number of the pull request that triggered the workflow.
