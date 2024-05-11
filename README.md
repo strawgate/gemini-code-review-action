@@ -10,7 +10,7 @@ We have to set a GitHub Actions secret `GEMINI_API_KEY` to use the OpenAI API so
 ## Inputs
 
 - `gemini_api_key`: The OpenAI API key to access the OpenAI API [(GET MY API KEY)](https://makersuite.google.com/app/apikey).
-- `github_token`: The GitHub token to access the GitHub API [(GET MY API TOKEN)](https://github.com/settings/tokens).
+- `github_token`: The GitHub token to access the GitHub API (You do not need to generate this Token!).
 - `github_repository`: The GitHub repository to post a review comment.
 - `github_pull_request_number`: The GitHub pull request number to post a review comment.
 - `git_commit_hash`: The git commit hash to post a review comment.
