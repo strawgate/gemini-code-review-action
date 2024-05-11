@@ -105,6 +105,7 @@ def get_review(
     # Get summary by chunk
     chunked_reviews = []
     for chunked_diff in chunked_diff_list:
+        logger.debug(str(review_prompt + "\n\n```" + chunked_diff + "```"))
         response = model.generate_content(str(review_prompt + "\n\n```" + chunked_diff + "```"))
         review_result = response.text
         chunked_reviews.append(review_result)
