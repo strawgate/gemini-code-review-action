@@ -99,7 +99,7 @@ def get_review(
 ):
     """Get a review"""
     # Chunk the prompt
-    genaiModel = genai.GenerativeModel(model)
+    genai_model = genai.GenerativeModel(model)
     review_prompt = get_review_prompt(extra_prompt=extra_prompt)
     chunked_diff_list = chunk_string(input_string=diff, chunk_size=prompt_chunk_size)
     # Get summary by chunk
@@ -110,8 +110,7 @@ def get_review(
         
         ```{str(chunked_diff)}```""")
 
-        logger.debug(f"Prompt: {prompt}")
-        response = genaiModel.generate_content(prompt)
+        response = genai_model.generate_content(prompt)
         review_result = response.text
         chunked_reviews.append(review_result)
     # If the chunked reviews are only one, return it
@@ -126,8 +125,7 @@ def get_review(
     
     ```{str(chunked_reviews_JOIN)}```""")
 
-    logger.debug(f"Prompt: {prompt}")
-    response = genaiModel.generate_content(prompt)
+    response = genai_model.generate_content(prompt)
     summarized_review = response.text
     return chunked_reviews, summarized_review
 
@@ -175,6 +173,7 @@ def main(
 
     # Set the Gemini API key
     genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+    logger.debug(f"api_key: {os.getenv("GEMINI_API_KEY")}")
 
     # Request a code review
     chunked_reviews, summarized_review = get_review(
