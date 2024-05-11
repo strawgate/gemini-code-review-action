@@ -105,7 +105,7 @@ def get_review(
     # Get summary by chunk
     chunked_reviews = []
     for chunked_diff in chunked_diff_list:
-        response = model.generate_content("" + review_prompt + "\n\n```" + chunked_diff + "```")
+        response = model.generate_content(str(review_prompt + "\n\n```" + chunked_diff + "```"))
         review_result = response.text
         chunked_reviews.append(review_result)
     # If the chunked reviews are only one, return it
@@ -114,7 +114,7 @@ def get_review(
 
     # Summarize the chunked reviews
     summarize_prompt = get_summarize_prompt()
-    response = model.generate_content("" + summarize_prompt + "\n\n```" + "\n".join(chunked_reviews) + "```")
+    response = model.generate_content(str(summarize_prompt + "\n\n```" + "\n".join(chunked_reviews) + "```"))
     summarized_review = response.text
     return chunked_reviews, summarized_review
 
