@@ -1,4 +1,4 @@
-# gpt-code-review-action
+# gemini-code-review-action
 A container GitHub Action to review a pull request by GPT.
 
 If the size of a pull request is over the maximum chunk size of the OpenAI API, the Action will split the pull request into multiple chunks and generate review comments for each chunk.
