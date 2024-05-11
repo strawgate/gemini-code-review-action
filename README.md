@@ -68,8 +68,8 @@ jobs:
           git diff "origin/${{ env.PULL_REQUEST_HEAD_REF }}" > "diff.txt"
           # shellcheck disable=SC2086
           echo "diff=$(cat "diff.txt")" >> $GITHUB_ENV
-      - uses: yu-iskw/gpt-code-review-action@v0.3.0
-        name: "Code Review by GPT"
+      - uses: rubensflinco/gemini-code-review-action@latest
+        name: "Code Review by Gemini AI"
         id: review
         with:
           gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
