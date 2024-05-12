@@ -14,9 +14,6 @@ name: "AI Code Review"
 
 on:
   pull_request:
-    paths-ignore:
-      - "*.md"
-      - "LICENSE"
 
 jobs:
   review:
