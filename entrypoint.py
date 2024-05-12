@@ -110,8 +110,17 @@ def get_review(
     # Get summary by chunk
     chunked_reviews = []
     for chunked_diff in chunked_diff_list:
-        convo = model.start_chat(history=[])
-        convo.send_message(review_prompt+"\n\n"+chunked_diff)
+        convo = genai_model.start_chat(history=[
+            {
+                "role": "user",
+                "parts": [review_prompt]
+            },
+            {
+                "role": "model",
+                "parts": ["Ok"]
+            },
+        ])
+        convo.send_message(chunked_diff)
         review_result = convo.last.text
         chunked_reviews.append(review_result)
     # If the chunked reviews are only one, return it
@@ -121,17 +130,8 @@ def get_review(
     # Summarize the chunked reviews
     summarize_prompt = get_summarize_prompt()
     chunked_reviews_join = "\n".join(chunked_reviews)
-    convo = model.start_chat(history=[
-        {
-            "role": "user",
-            "parts": [summarize_prompt]
-        },
-        {
-            "role": "model",
-            "parts": ["Ok"]
-        },
-    ])
-    convo.send_message(chunked_reviews_join)
+    convo = genai_model.start_chat(history=[])
+    convo.send_message(summarize_prompt+"\n\n"+chunked_reviews_join)
     summarized_review = convo.last.text
     return chunked_reviews, summarized_review
 
