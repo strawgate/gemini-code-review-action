@@ -136,10 +136,10 @@ def format_review_comment(summarized_review: str, chunked_reviews: List[str]) ->
     if len(chunked_reviews) == 1:
         return summarized_review
     unioned_reviews = "\n".join(chunked_reviews)
-    review = f"""<details>
-    <summary>{summarized_review}</summary>
+    review = f"""
+    {summarized_review}
+    
     {unioned_reviews}
-    </details>
     """
     return review
 
