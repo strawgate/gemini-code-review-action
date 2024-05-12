@@ -39,9 +39,9 @@ def get_review_prompt(extra_prompt: str = "") -> str:
     This is a pull request or part of a pull request if the pull request is very large.
     Suppose you review this PR as an excellent software engineer and an excellent security engineer.
     Can you tell me the issues with differences in a pull request and provide suggestions to improve it?
-    You can provide a review summary and comments on issues per file if any major issues are found.
-    Always put the name of the file that is citing the improvement or problem.
-    You will find the diff below so you can analyze:
+    You can provide a review summary and issue comments per file if any major issues are found.
+    Always include the name of the file that is citing the improvement or problem.
+    In the next messages I will be sending you the difference between the GitHub file codes, okay?
     """
     return template
 
@@ -49,10 +49,9 @@ def get_review_prompt(extra_prompt: str = "") -> str:
 def get_summarize_prompt() -> str:
     """Get a prompt template"""
     template = """
-    This is a pull request from a set of revisions of a pull request.
-    Can you summarize them?
-    It would be good to focus on highlighting pressing issues and providing code suggestions to improve the pull request.
-    Always put the name of the file that is citing the improvement or problem.
+    Can you summarize this for me?
+    It would be good to stick to highlighting pressing issues and providing code suggestions to improve the pull request.
+    Here's what you need to summarize:
     """
     return template
 
@@ -111,14 +110,9 @@ def get_review(
     # Get summary by chunk
     chunked_reviews = []
     for chunked_diff in chunked_diff_list:
-        prompt = str(f"""
-        {str(review_prompt)}
-        
-        ```
-        {str(chunked_diff)}
-        ```""")
-        response = genai_model.generate_content(prompt)
-        review_result = response.text
+        convo = model.start_chat(history=[])
+        convo.send_message(review_prompt+"\n\n"+chunked_diff)
+        review_result = convo.last.text
         chunked_reviews.append(review_result)
     # If the chunked reviews are only one, return it
     if len(chunked_reviews) == 1:
@@ -126,13 +120,19 @@ def get_review(
 
     # Summarize the chunked reviews
     summarize_prompt = get_summarize_prompt()
-    chunked_reviews_join = str("\n".join(chunked_reviews))
-    prompt2 = str(f"""
-    {summarize_prompt}
-
-    {str(chunked_reviews_join)}""")
-    response = genai_model.generate_content(prompt2)
-    summarized_review = response.text
+    chunked_reviews_join = "\n".join(chunked_reviews)
+    convo = model.start_chat(history=[
+        {
+            "role": "user",
+            "parts": [summarize_prompt]
+        },
+        {
+            "role": "model",
+            "parts": ["Ok"]
+        },
+    ])
+    convo.send_message(chunked_reviews_join)
+    summarized_review = convo.last.text
     return chunked_reviews, summarized_review
 
 
