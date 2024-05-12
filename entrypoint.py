@@ -130,7 +130,7 @@ def get_review(
     prompt2 = str(f"""
     {summarize_prompt}
 
-    {str(chunked_reviews_JOIN)}""")
+    {str(chunked_reviews_join)}""")
     response = genai_model.generate_content(prompt2)
     summarized_review = response.text
     return chunked_reviews, summarized_review
