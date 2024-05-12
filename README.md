@@ -61,7 +61,7 @@ jobs:
           git diff "origin/${{ env.PULL_REQUEST_HEAD_REF }}" > "diff.txt"
           # shellcheck disable=SC2086
           echo "diff=$(cat "diff.txt")" >> $GITHUB_ENV
-      - uses: rubensflinco/gemini-code-review-action@1.0.3
+      - uses: rubensflinco/gemini-code-review-action@1.0.4
         name: "Code Review by Gemini AI"
         id: review
         with:
@@ -75,6 +75,6 @@ jobs:
             ${{ steps.get_diff.outputs.pull_request_diff }}
           pull_request_chunk_size: "3500"
           extra_prompt: |-
-            You are very familiar with python too. Answer in Brazilian Portuguese!
+            Sempre responda em português brasileiro!
           log_level: "DEBUG"
 ```
