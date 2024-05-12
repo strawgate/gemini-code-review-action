@@ -122,6 +122,7 @@ def get_review(
         ])
         convo.send_message(chunked_diff)
         review_result = convo.last.text
+        logger.debug(f"Response AI: {review_result}")
         chunked_reviews.append(review_result)
     # If the chunked reviews are only one, return it
     if len(chunked_reviews) == 1:
@@ -133,6 +134,7 @@ def get_review(
     convo = genai_model.start_chat(history=[])
     convo.send_message(summarize_prompt+"\n\n"+chunked_reviews_join)
     summarized_review = convo.last.text
+    logger.debug(f"Response AI: {summarized_review}")
     return chunked_reviews, summarized_review
 
 
