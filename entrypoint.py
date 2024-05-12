@@ -122,6 +122,7 @@ def get_review(
     chunked_reviews_JOIN = str("\n".join(chunked_reviews))
     prompt = str(f"""
     {summarize_prompt}
+    {extra_prompt}
     
     ```{str(chunked_reviews_JOIN)}```""")
 
