@@ -99,18 +99,14 @@ def get_review(
 ):
     """Get a review"""
     # Chunk the prompt
-    genai_model = genai.GenerativeModel(model)
     review_prompt = get_review_prompt(extra_prompt=extra_prompt)
     chunked_diff_list = chunk_string(input_string=diff, chunk_size=prompt_chunk_size)
     # Get summary by chunk
     chunked_reviews = []
     for chunked_diff in chunked_diff_list:
-        prompt = str(f"""
-        {str(review_prompt)}
-        
-        ```{str(chunked_diff)}```""")
-
-        response = genai_model.generate_content(prompt)
+        system_instruction = review_prompt
+        genai_model = genai.GenerativeModel(model_name=model,system_instruction=system_instruction)
+        response = genai_model.generate_content(chunked_diff)
         review_result = response.text
         chunked_reviews.append(review_result)
     # If the chunked reviews are only one, return it
@@ -119,14 +115,10 @@ def get_review(
 
     # Summarize the chunked reviews
     summarize_prompt = get_summarize_prompt()
-    chunked_reviews_JOIN = str("\n".join(chunked_reviews))
-    prompt = str(f"""
-    {summarize_prompt}
-    {extra_prompt}
-    
-    ```{str(chunked_reviews_JOIN)}```""")
-
-    response = genai_model.generate_content(prompt)
+    chunked_reviews_join = str("\n".join(chunked_reviews))
+    system_instruction = summarize_prompt
+    genai_model = genai.GenerativeModel(model_name=model,system_instruction=system_instruction))
+    response = genai_model.generate_content(chunked_reviews_join)
     summarized_review = response.text
     return chunked_reviews, summarized_review
 
