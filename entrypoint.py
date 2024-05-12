@@ -167,8 +167,7 @@ def format_review_comment(summarized_review: str, chunked_reviews: List[str]) ->
 @click.option("--presence-penalty", type=click.FLOAT, required=False, default=0.0, help="Presence penalty")
 @click.option("--log-level", type=click.STRING, required=False, default="INFO", help="Presence penalty")
 def main(
-        
-        : str,
+        diff: str,
         diff_chunk_size: int,
         model: str,
         extra_prompt: str,
