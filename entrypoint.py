@@ -131,7 +131,7 @@ def get_review(
 
     if len(chunked_reviews) == 0:
         summarize_prompt = "Say that you didn't find any relevant changes to comment on any file"
-    else
+    else:
         summarize_prompt = get_summarize_prompt()
 
     chunked_reviews_join = "\n".join(chunked_reviews)
