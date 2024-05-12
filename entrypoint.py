@@ -125,11 +125,15 @@ def get_review(
         logger.debug(f"Response AI: {review_result}")
         chunked_reviews.append(review_result)
     # If the chunked reviews are only one, return it
+
     if len(chunked_reviews) == 1:
         return chunked_reviews, chunked_reviews[0]
 
-    # Summarize the chunked reviews
-    summarize_prompt = get_summarize_prompt()
+    if len(chunked_reviews) == 0:
+        summarize_prompt = "Say that you didn't find any relevant changes to comment on any file"
+    else
+        summarize_prompt = get_summarize_prompt()
+
     chunked_reviews_join = "\n".join(chunked_reviews)
     convo = genai_model.start_chat(history=[])
     convo.send_message(summarize_prompt+"\n\n"+chunked_reviews_join)
