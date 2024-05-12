@@ -117,7 +117,7 @@ def get_review(
     summarize_prompt = get_summarize_prompt()
     chunked_reviews_join = str("\n".join(chunked_reviews))
     system_instruction = summarize_prompt
-    genai_model = genai.GenerativeModel(model_name=model,system_instruction=system_instruction))
+    genai_model = genai.GenerativeModel(model_name=model,system_instruction=system_instruction)
     response = genai_model.generate_content(chunked_reviews_join)
     summarized_review = response.text
     return chunked_reviews, summarized_review
