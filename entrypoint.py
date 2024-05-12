@@ -147,10 +147,10 @@ def format_review_comment(summarized_review: str, chunked_reviews: List[str]) ->
     if len(chunked_reviews) == 1:
         return summarized_review
     unioned_reviews = "\n".join(chunked_reviews)
-    review = f"""
-    {summarized_review}
-    
+    review = f"""<details>
+    <summary>{summarized_review}</summary>
     {unioned_reviews}
+    </details>
     """
     return review
 
@@ -167,7 +167,8 @@ def format_review_comment(summarized_review: str, chunked_reviews: List[str]) ->
 @click.option("--presence-penalty", type=click.FLOAT, required=False, default=0.0, help="Presence penalty")
 @click.option("--log-level", type=click.STRING, required=False, default="INFO", help="Presence penalty")
 def main(
-        diff: str,
+        
+        : str,
         diff_chunk_size: int,
         model: str,
         extra_prompt: str,
