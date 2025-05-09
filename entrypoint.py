@@ -155,9 +155,69 @@ def format_review_comment(summarized_review: str, chunked_reviews: List[str]) ->
     return review
 
 
+def parse_github_comment(comment: str) -> dict:
+    """Parse GitHub comment to determine command type and options"""
+    command_map = {
+        "gemini review all": "all",
+        "gemini review diff": "diff",
+        "gemini suggest next steps": "suggest"
+    }
+    
+    # Default to diff if no command found
+    command_type = "diff"
+    for cmd, cmd_type in command_map.items():
+        if comment.strip().lower().startswith(cmd):
+            command_type = cmd_type
+            break
+            
+    return {
+        "command_type": command_type,
+        "raw_comment": comment
+    }
+
+
+def get_repository_contents(
+    github_token: str,
+    github_repository: str,
+    include_extensions: List[str] = None,
+    always_include_files: List[str] = None
+) -> str:
+    """Get contents of repository files"""
+    headers = {
+        "Accept": "application/vnd.github.v3+json",
+        "authorization": f"Bearer {github_token}"
+    }
+    
+    # Get repository contents recursively
+    url = f"https://api.github.com/repos/{github_repository}/git/trees/main?recursive=1"
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    
+    files_content = []
+    for item in response.json()["tree"]:
+        if item["type"] != "blob":
+            continue
+            
+        file_path = item["path"]
+        # Skip if not in include_extensions and not in always_include_files
+        if include_extensions and not any(file_path.endswith(ext) for ext in include_extensions):
+            if not always_include_files or file_path not in always_include_files:
+                continue
+                
+        # Get file contents
+        file_url = f"https://api.github.com/repos/{github_repository}/contents/{file_path}"
+        file_response = requests.get(file_url, headers=headers)
+        file_response.raise_for_status()
+        
+        content = file_response.json()["content"]
+        files_content.append(f"File: {file_path}\n{content}\n")
+        
+    return "\n".join(files_content)
+
+
 @click.command()
-@click.option("--diff", type=click.STRING, required=True, help="Pull request diff")
-@click.option("--diff-chunk-size", type=click.INT, required=False, default=3500, help="Pull request diff")
+@click.option("--diff", type=click.STRING, required=False, help="Pull request diff")
+@click.option("--diff-chunk-size", type=click.INT, required=False, default=3500, help="Pull request diff chunk size")
 @click.option("--model", type=click.STRING, required=False, default="gpt-3.5-turbo", help="Model")
 @click.option("--extra-prompt", type=click.STRING, required=False, default="", help="Extra prompt")
 @click.option("--temperature", type=click.FLOAT, required=False, default=0.1, help="Temperature")
@@ -165,7 +225,10 @@ def format_review_comment(summarized_review: str, chunked_reviews: List[str]) ->
 @click.option("--top-p", type=click.FLOAT, required=False, default=1.0, help="Top N")
 @click.option("--frequency-penalty", type=click.FLOAT, required=False, default=0.0, help="Frequency penalty")
 @click.option("--presence-penalty", type=click.FLOAT, required=False, default=0.0, help="Presence penalty")
-@click.option("--log-level", type=click.STRING, required=False, default="INFO", help="Presence penalty")
+@click.option("--log-level", type=click.STRING, required=False, default="INFO", help="Log level")
+@click.option("--github-comment", type=click.STRING, required=False, help="GitHub comment content")
+@click.option("--include-extensions", type=click.STRING, required=False, help="Comma-separated list of file extensions to include")
+@click.option("--always-include-files", type=click.STRING, required=False, help="Comma-separated list of files to always include")
 def main(
         diff: str,
         diff_chunk_size: int,
@@ -176,10 +239,14 @@ def main(
         top_p: float,
         frequency_penalty: float,
         presence_penalty: float,
-        log_level: str
+        log_level: str,
+        github_comment: str,
+        include_extensions: str,
+        always_include_files: str
 ):
     # Set log level
     logger.level(log_level)
+    
     # Check if necessary environment variables are set or not
     check_required_env_vars()
 
@@ -187,9 +254,27 @@ def main(
     api_key = os.getenv("GEMINI_API_KEY")
     genai.configure(api_key=api_key)
 
+    # Parse GitHub comment if provided
+    command_info = parse_github_comment(github_comment) if github_comment else {"command_type": "diff"}
+    
+    # Parse file filters
+    include_extensions_list = include_extensions.split(",") if include_extensions else None
+    always_include_files_list = always_include_files.split(",") if always_include_files else None
+    
+    # Get content based on command type
+    if command_info["command_type"] == "all":
+        content = get_repository_contents(
+            github_token=os.getenv("GITHUB_TOKEN"),
+            github_repository=os.getenv("GITHUB_REPOSITORY"),
+            include_extensions=include_extensions_list,
+            always_include_files=always_include_files_list
+        )
+    else:
+        content = diff
+
     # Request a code review
     chunked_reviews, summarized_review = get_review(
-        diff=diff,
+        diff=content,
         extra_prompt=extra_prompt,
         model=model,
         temperature=temperature,

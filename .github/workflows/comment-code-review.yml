@@ -1,0 +1,42 @@
+name: "Comment-Driven Code Review by Gemini AI"
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: "Get PR number from comment"
+        id: get_pr_number
+        run: |
+          if [[ "${{ github.event.issue.pull_request }}" ]]; then
+            PR_NUMBER=$(echo "${{ github.event.issue.pull_request }}" | awk -F'/' '{print $NF}')
+            echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          else
+            echo "Not a pull request comment, skipping"
+            exit 0
+          fi
+          
+      - uses: rubensflinco/gemini-code-review-action@1.0.5
+        name: "Code Review by Gemini AI"
+        if: steps.get_pr_number.outputs.pr_number != ''
+        with:
+          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_repository: ${{ github.repository }}
+          github_pull_request_number: ${{ steps.get_pr_number.outputs.pr_number }}
+          git_commit_hash: ${{ github.event.issue.pull_request.head.sha }}
+          model: "gemini-2.5-flash-preview-04-17"
+          github_comment: ${{ github.event.comment.body }}
+          include_extensions: ".py,.js,.ts,.java,.go"
+          always_include_files: "README.md,CONTRIBUTING.md,AI-COMMENT-CODE-REVIEW.md"
+          extra_prompt: |
+            Sempre responda em português brasileiro!
+          log_level: "DEBUG" 
